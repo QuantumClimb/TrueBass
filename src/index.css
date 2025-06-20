@@ -1,0 +1,78 @@
+
+/* Google Fonts are now loaded in index.html */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
+
+@layer base {
+  :root {
+    --background: 10 10% 4%;
+    --foreground: 0 0% 98%;
+
+    --card: 15 15% 8%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 15 15% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 197 100% 50%;
+    --primary-foreground: 0 0% 2%;
+
+    --secondary: 16 100% 60%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 16%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 197 100% 50%;
+    --accent-foreground: 0 0% 2%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 16%;
+    --input: 0 0% 16%;
+    --ring: 197 100% 50%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 15 15% 8%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 197 100% 50%;
+    --sidebar-primary-foreground: 0 0% 2%;
+    --sidebar-accent: 0 0% 16%;
+    --sidebar-accent-foreground: 0 0% 90%;
+    --sidebar-border: 0 0% 16%;
+    --sidebar-ring: 197 100% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-bass-dark text-foreground font-sans;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .gradient-text {
+    @apply bg-gradient-to-r from-neon-blue to-neon-orange bg-clip-text text-transparent;
+  }
+  
+  .neon-glow {
+    box-shadow: 0 0 10px theme('colors.neon-blue'), 0 0 20px theme('colors.neon-blue'), 0 0 30px theme('colors.neon-blue');
+  }
+  
+  .bass-card {
+    @apply bg-bass-gray/50 backdrop-blur-sm border border-bass-light rounded-xl p-6 hover:border-neon-blue/50 transition-all duration-300;
+  }
+}
