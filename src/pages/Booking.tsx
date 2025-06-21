@@ -229,7 +229,7 @@ const Booking = () => {
               <div className="flex flex-col sm:flex-row gap-4 mt-8">
                 <Button 
                   onClick={() => setBookingStep(3)}
-                  className="flex-1 bg-gradient-to-r from-neon-blue to-neon-orange hover:opacity-90 text-lg py-6"
+                  className="flex-1 bg-gradient-to-r from-neon-blue to-neon-orange hover:opacity-90 text-sm md:text-lg py-4 md:py-6 px-4 md:px-6"
                 >
                   Continue to Confirmation
                 </Button>
@@ -320,25 +320,25 @@ const Booking = () => {
                 <div className="space-y-4">
                   <Button 
                     onClick={handleWhatsAppBooking}
-                    className="w-full bg-green-600 hover:bg-green-700 text-lg py-6"
+                    className="w-full bg-green-600 hover:bg-green-700 text-sm md:text-lg py-4 md:py-6 px-4 md:px-6 min-h-[3rem]"
                   >
-                    <Image className="w-5 h-5 mr-2" />
-                    Continue via WhatsApp
+                    <Image className="w-4 h-4 md:w-5 md:h-5 mr-2 flex-shrink-0" />
+                    <span className="leading-tight">Continue via WhatsApp</span>
                   </Button>
 
                   <Button 
                     variant="outline"
-                    className="w-full border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-bass-dark text-lg py-6"
+                    className="w-full border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-bass-dark text-sm md:text-lg py-4 md:py-6 px-4 md:px-6 min-h-[3rem]"
                   >
-                    <Video className="w-5 h-5 mr-2" />
-                    Schedule Phone Call
+                    <Video className="w-4 h-4 md:w-5 md:h-5 mr-2 flex-shrink-0" />
+                    <span className="leading-tight">Schedule Phone Call</span>
                   </Button>
 
                   <Button 
                     variant="outline"
-                    className="w-full border-neon-orange text-neon-orange hover:bg-neon-orange hover:text-bass-dark text-lg py-6"
+                    className="w-full border-neon-orange text-neon-orange hover:bg-neon-orange hover:text-bass-dark text-sm md:text-lg py-4 md:py-6 px-4 md:px-6 min-h-[3rem]"
                   >
-                    Send Email Request
+                    <span className="leading-tight">Send Email Request</span>
                   </Button>
                 </div>
 

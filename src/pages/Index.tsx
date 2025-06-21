@@ -40,10 +40,9 @@ const Index = () => {
             muted
             playsInline
             className="absolute inset-0 w-full h-full object-cover"
-            poster="/share-image.png"
           >
-            <source src="/hero-video.mp4" type="video/mp4" />
             <source src="/hero-video.webm" type="video/webm" />
+            <source src="/hero-video.mp4" type="video/mp4" />
             {/* Fallback for browsers that don't support video */}
             Your browser does not support the video tag.
           </video>
@@ -84,7 +83,7 @@ const Index = () => {
             <Button 
               asChild 
               size="lg"
-              className="bg-gradient-to-r from-neon-blue to-neon-orange hover:opacity-90 transition-opacity text-lg px-8 py-6"
+              className="bg-gradient-to-r from-neon-blue to-neon-orange hover:opacity-90 transition-opacity text-sm md:text-lg px-4 md:px-8 py-4 md:py-6 min-h-[3rem] md:min-h-[4rem]"
             >
               <Link to="/booking">Book Your Event</Link>
             </Button>
@@ -92,7 +91,7 @@ const Index = () => {
               asChild 
               variant="outline" 
               size="lg"
-              className="border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-bass-dark text-lg px-8 py-6"
+              className="border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-bass-dark text-sm md:text-lg px-4 md:px-8 py-4 md:py-6 min-h-[3rem] md:min-h-[4rem]"
             >
               <Link to="/services">Our Services</Link>
             </Button>
@@ -142,7 +141,7 @@ const Index = () => {
             <Button 
               asChild 
               size="lg"
-              className="bg-gradient-to-r from-neon-blue to-neon-orange hover:opacity-90 transition-opacity"
+              className="bg-gradient-to-r from-neon-blue to-neon-orange hover:opacity-90 transition-opacity px-4 md:px-6 py-3 md:py-4"
             >
               <Link to="/contact">Get Quote</Link>
             </Button>
@@ -150,7 +149,7 @@ const Index = () => {
               asChild 
               variant="outline" 
               size="lg"
-              className="border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-bass-dark"
+              className="border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-bass-dark px-4 md:px-6 py-3 md:py-4"
             >
               <a href="tel:+15551234BASS">
                 <Phone className="w-4 h-4 mr-2" />

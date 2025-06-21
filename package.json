@@ -1,8 +1,32 @@
 {
-  "name": "vite_react_shadcn_ts",
+  "name": "truebass-entertainment",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "True Bass Entertainment - Professional sound, lighting, and DJ services website",
+  "author": {
+    "name": "QuantumClimb",
+    "email": "qc@quantum-climb.com",
+    "url": "https://github.com/QuantumClimb"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/QuantumClimb/TrueBass.git"
+  },
+  "homepage": "https://github.com/QuantumClimb/TrueBass#readme",
+  "bugs": {
+    "url": "https://github.com/QuantumClimb/TrueBass/issues"
+  },
+  "keywords": [
+    "entertainment", 
+    "sound-system", 
+    "lighting", 
+    "dj-services", 
+    "event-management", 
+    "react", 
+    "typescript", 
+    "vite"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
