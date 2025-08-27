@@ -1,75 +1,129 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Image as ImageIcon, Video, Music, Calendar } from 'lucide-react';
+import { Image as ImageIcon, Video, Music, Calendar, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { loadGalleryImages, getImagesByCategory, getCategoryInfo } from '@/utils/imageLoader';
+
+const IMAGES_PER_PAGE = 24;
+
+// Define the image type
+interface GalleryImage {
+  src: string;
+  category: string;
+  title: string;
+  description: string;
+  id: string;
+}
 
 const Gallery = () => {
   const [filter, setFilter] = useState('all');
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [allImages, setAllImages] = useState<GalleryImage[]>([]);
+  const [filteredImages, setFilteredImages] = useState<GalleryImage[]>([]);
+  const [displayedImages, setDisplayedImages] = useState<GalleryImage[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
 
-  const galleryItems = [
-    {
-      id: 1,
-      type: 'image',
-      category: 'concert',
-      title: 'Live Setup at NSCBICC, KL',
-      image: 'photo-1470813740244-df37b8c1edcb',
-      description: 'Lights flashing, crowd enjoying our professional sound setup at National Science Centre'
-    },
-    {
-      id: 2,
-      type: 'image',
-      category: 'party',
-      title: 'True Bass DJ Night – Kuala Lumpur',
-      image: 'photo-1605810230434-7631ac76ec81',
-      description: 'Energetic dance floor with our signature DJ services and lighting'
-    },
-    {
-      id: 3,
-      type: 'image',
-      category: 'corporate',
-      title: 'Private Event – Poolside Setup',
-      image: 'photo-1526374965328-7f61d4dc18c5',
-      description: 'Elegant lighting & PA system for exclusive poolside corporate event'
-    },
-    {
-      id: 4,
-      type: 'image',
-      category: 'concert',
-      title: 'Cultural Fest 2024 – Full stage sound gear',
-      image: 'photo-1649972904349-6e44c42644a7',
-      description: 'Complete stage sound system setup for major cultural festival'
-    },
-    {
-      id: 5,
-      type: 'video',
-      category: 'wedding',
-      title: 'Behind the Scenes – Soundcheck moments',
-      image: 'photo-1500673922987-e212871fec22',
-      description: 'Professional soundcheck preparation for wedding reception'
-    },
-    {
-      id: 6,
-      type: 'image',
-      category: 'wedding',
-      title: 'Elegant Wedding Reception',
-      image: 'photo-1649972904349-6e44c42644a7',
-      description: 'Beautiful outdoor wedding with romantic lighting setup'
+  // Load images on component mount
+  useEffect(() => {
+    const images = loadGalleryImages();
+    setAllImages(images);
+    setFilteredImages(images);
+    setDisplayedImages(images.slice(0, IMAGES_PER_PAGE));
+    setHasMore(images.length > IMAGES_PER_PAGE);
+  }, []);
+
+  // Update filtered images when filter changes
+  useEffect(() => {
+    const filtered = getImagesByCategory(filter);
+    setFilteredImages(filtered);
+    setDisplayedImages(filtered.slice(0, IMAGES_PER_PAGE));
+    setHasMore(filtered.length > IMAGES_PER_PAGE);
+    setCurrentImageIndex(0);
+  }, [filter]);
+
+  const loadMore = () => {
+    const next = filteredImages.slice(displayedImages.length, displayedImages.length + IMAGES_PER_PAGE);
+    setDisplayedImages(prev => [...prev, ...next]);
+    setHasMore(displayedImages.length + IMAGES_PER_PAGE < filteredImages.length);
+  };
+
+  const openLightbox = useCallback((index: number) => {
+    setCurrentImageIndex(index);
+    setLightboxOpen(true);
+    document.body.style.overflow = 'hidden';
+  }, []);
+
+  const closeLightbox = useCallback(() => {
+    setLightboxOpen(false);
+    document.body.style.overflow = 'auto';
+  }, []);
+
+  const nextImage = useCallback(() => {
+    setCurrentImageIndex((prev) => 
+      prev === displayedImages.length - 1 ? 0 : prev + 1
+    );
+  }, [displayedImages.length]);
+
+  const prevImage = useCallback(() => {
+    setCurrentImageIndex((prev) => 
+      prev === 0 ? displayedImages.length - 1 : prev - 1
+    );
+  }, [displayedImages.length]);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  }, []);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    touchEndX.current = e.changedTouches[0].clientX;
+    const diff = touchStartX.current - touchEndX.current;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        nextImage();
+      } else {
+        prevImage();
+      }
     }
-  ];
+  }, [nextImage, prevImage]);
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!lightboxOpen) return;
+      
+      switch (e.key) {
+        case 'Escape':
+          closeLightbox();
+          break;
+        case 'ArrowRight':
+          nextImage();
+          break;
+        case 'ArrowLeft':
+          prevImage();
+          break;
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'auto';
+    };
+  }, [lightboxOpen, closeLightbox, nextImage, prevImage]);
 
   const categories = [
     { key: 'all', label: 'All', icon: ImageIcon },
-    { key: 'wedding', label: 'Weddings', icon: Music },
-    { key: 'concert', label: 'Concerts', icon: Video },
-    { key: 'corporate', label: 'Corporate', icon: Calendar },
-    { key: 'party', label: 'Parties', icon: Music }
+    { key: 'Events', label: 'Events', icon: Calendar },
+    { key: 'Stage Setup', label: 'Stage Setup', icon: Video },
+    { key: 'Back Line', label: 'Back Line', icon: Music },
+    { key: 'Projects', label: 'Projects', icon: Video },
+    { key: 'Concerts', label: 'Concerts', icon: Music }
   ];
-
-  const filteredItems = filter === 'all' 
-    ? galleryItems 
-    : galleryItems.filter(item => item.category === filter);
 
   return (
     <div className="min-h-screen py-20 px-4">
@@ -87,32 +141,42 @@ const Gallery = () => {
 
         {/* Filter Buttons */}
         <div className="flex flex-wrap justify-center gap-4 mb-12">
-          {categories.map((category) => (
-            <Button
-              key={category.key}
-              variant={filter === category.key ? "default" : "outline"}
-              onClick={() => setFilter(category.key)}
-              className={
-                filter === category.key
-                  ? "bg-gradient-to-r from-neon-blue to-neon-orange hover:opacity-90"
-                  : "border-bass-light text-muted-foreground hover:border-neon-blue hover:text-neon-blue"
-              }
-            >
-              <category.icon className="w-4 h-4 mr-2" />
-              {category.label}
-            </Button>
-          ))}
+          {categories.map((category) => {
+            const count = category.key === 'all' 
+              ? allImages.length 
+              : allImages.filter(img => img.category === category.key).length;
+            
+            return (
+              <Button
+                key={category.key}
+                variant={filter === category.key ? "default" : "outline"}
+                onClick={() => setFilter(category.key)}
+                className={
+                  filter === category.key
+                    ? "bg-gradient-to-r from-neon-blue to-neon-orange hover:opacity-90"
+                    : "border-bass-light text-muted-foreground hover:border-neon-blue hover:text-neon-blue"
+                }
+              >
+                <category.icon className="w-4 h-4 mr-2" />
+                {category.label} ({count})
+              </Button>
+            );
+          })}
         </div>
 
         {/* Gallery Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
-          {filteredItems.map((item) => (
-            <Card key={item.id} className="bass-card group overflow-hidden">
-              <div className="relative overflow-hidden">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-20">
+          {displayedImages.map((item, index) => (
+            <Card key={item.id} className="bass-card group overflow-hidden cursor-pointer">
+              <div className="relative overflow-hidden" onClick={() => openLightbox(index)}>
                 <img
-                  src={`https://images.unsplash.com/${item.image}?auto=format&fit=crop&w=600&q=80`}
+                  src={item.src}
                   alt={item.title}
                   className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
+                  onError={(e) => {
+                    // Fallback for missing images
+                    e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjM0Y0NTU5Ii8+Cjx0ZXh0IHg9IjMwMCIgeT0iMjAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+SW1hZ2UgTm90IEZvdW5kPC90ZXh0Pgo8L3N2Zz4K';
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-bass-dark/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 
@@ -120,11 +184,7 @@ const Gallery = () => {
                 <Badge 
                   className="absolute top-4 right-4 bg-neon-blue text-bass-dark"
                 >
-                  {item.type === 'video' ? (
-                    <><Video className="w-3 h-3 mr-1" /> Video</>
-                  ) : (
-                    <><ImageIcon className="w-3 h-3 mr-1" /> Photo</>
-                  )}
+                  <ImageIcon className="w-3 h-3 mr-1" /> Photo
                 </Badge>
 
                 {/* Hover Content */}
@@ -133,7 +193,7 @@ const Gallery = () => {
                     variant="secondary"
                     className="bg-white/20 backdrop-blur-sm hover:bg-white/30"
                   >
-                    {item.type === 'video' ? 'Play Video' : 'View Full Size'}
+                    View Full Size
                   </Button>
                 </div>
               </div>
@@ -151,15 +211,93 @@ const Gallery = () => {
         </div>
 
         {/* Load More Button */}
-        <div className="text-center mb-20">
-          <Button 
-            variant="outline"
-            size="lg"
-            className="border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-bass-dark"
+        {hasMore && (
+          <div className="text-center mb-20">
+            <Button 
+              variant="outline"
+              size="lg"
+              onClick={loadMore}
+              className="border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-bass-dark"
+            >
+              Load More Images
+            </Button>
+          </div>
+        )}
+
+        {/* Lightbox */}
+        {lightboxOpen && (
+          <div 
+            className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4"
+            onClick={closeLightbox}
           >
-            Load More Images
-          </Button>
-        </div>
+            <div className="relative max-w-7xl max-h-full">
+              {/* Close Button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={closeLightbox}
+                className="absolute top-4 right-4 z-10 bg-white/20 hover:bg-white/30 text-white"
+              >
+                <X className="w-6 h-6" />
+              </Button>
+
+              {/* Navigation Buttons */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={(e) => { e.stopPropagation(); prevImage(); }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/20 hover:bg-white/30 text-white"
+              >
+                <ChevronLeft className="w-8 h-8" />
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={(e) => { e.stopPropagation(); nextImage(); }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/20 hover:bg-white/30 text-white"
+              >
+                <ChevronRight className="w-8 h-8" />
+              </Button>
+
+              {/* Image Container */}
+              <div
+                className="relative max-h-[90vh] max-w-[90vw] overflow-auto sm:overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+                style={{ touchAction: 'pan-y pinch-zoom' }}
+              >
+                {isLoading && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                    <div className="w-8 h-8 border-4 border-white/20 border-t-white rounded-full animate-spin" />
+                  </div>
+                )}
+                
+                <img
+                  src={displayedImages[currentImageIndex]?.src}
+                  alt={displayedImages[currentImageIndex]?.title}
+                  className="max-h-[90vh] max-w-[90vw] object-contain"
+                  onLoad={() => setIsLoading(false)}
+                  onError={() => setIsLoading(false)}
+                />
+
+                {/* Image Info */}
+                <div className="absolute bottom-0 left-0 right-0 text-center text-white/80 py-4 bg-black/50">
+                  <h3 className="text-xl font-semibold mb-2">
+                    {displayedImages[currentImageIndex]?.title}
+                  </h3>
+                  <p className="text-sm opacity-80 mb-2">
+                    {displayedImages[currentImageIndex]?.description}
+                  </p>
+                  <p className="text-xs opacity-60">
+                    {currentImageIndex + 1} of {displayedImages.length}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* CTA Section */}
         <div className="text-center py-16 bg-gradient-to-r from-bass-gray to-bass-light rounded-2xl">
