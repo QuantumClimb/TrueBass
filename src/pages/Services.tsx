@@ -18,7 +18,7 @@ const Services = () => {
         'Stage lighting design',
         'Technical crew included'
       ],
-      image: 'photo-1470813740244-df37b8c1edcb'
+      image: '/services/sound_rental.png'
     },
     {
       icon: Headphones,
@@ -31,7 +31,7 @@ const Services = () => {
         'Interactive entertainment',
         'Wedding packages available'
       ],
-      image: 'photo-1526374965328-7f61d4dc18c5'
+      image: '/services/instruments_rental.png'
     },
     {
       icon: Music,
@@ -44,7 +44,7 @@ const Services = () => {
         'Recording equipment',
         'Delivery & setup included'
       ],
-      image: 'photo-1649972904349-6e44c42644a7'
+      image: '/services/artist_management.png'
     },
     {
       icon: Calendar,
@@ -57,7 +57,7 @@ const Services = () => {
         'Technical production',
         'Marketing support'
       ],
-      image: 'photo-1605810230434-7631ac76ec81'
+      image: '/services/dj_services.png'
     }
   ];
 
@@ -117,7 +117,7 @@ const Services = () => {
               <div className={index % 2 === 1 ? 'lg:col-start-1 lg:row-start-1' : ''}>
                 <div className="relative overflow-hidden rounded-xl">
                   <img
-                    src={`https://images.unsplash.com/${service.image}?auto=format&fit=crop&w=800&q=80`}
+                    src={service.image}
                     alt={service.title}
                     className="w-full h-80 object-cover hover:scale-105 transition-transform duration-300"
                   />
