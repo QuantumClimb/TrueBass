@@ -31,7 +31,7 @@ const Services = () => {
         'Interactive entertainment',
         'Wedding packages available'
       ],
-      image: '/services/instruments_rental.png'
+      image: '/services/dj_services.png'
     },
     {
       icon: Music,
@@ -44,7 +44,7 @@ const Services = () => {
         'Recording equipment',
         'Delivery & setup included'
       ],
-      image: '/services/artist_management.png'
+      image: '/services/instruments_rental.png'
     },
     {
       icon: Calendar,
@@ -57,7 +57,7 @@ const Services = () => {
         'Technical production',
         'Marketing support'
       ],
-      image: '/services/dj_services.png'
+      image: '/services/artist_management.png'
     }
   ];
 
@@ -80,12 +80,10 @@ const Services = () => {
           {services.map((service, index) => (
             <div 
               key={index} 
-              className={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-center ${
-                index % 2 === 1 ? 'lg:grid-flow-col-dense' : ''
-              }`}
+              className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch"
             >
               {/* Content */}
-              <div className={index % 2 === 1 ? 'lg:col-start-2' : ''}>
+              <div className={`${index % 2 === 1 ? 'lg:col-start-2' : ''}`}>
                 <Card className="bass-card h-full">
                   <div className="p-8">
                     <service.icon className="w-12 h-12 text-neon-blue mb-4" />
@@ -114,12 +112,12 @@ const Services = () => {
               </div>
 
               {/* Image */}
-              <div className={index % 2 === 1 ? 'lg:col-start-1 lg:row-start-1' : ''}>
-                <div className="relative overflow-hidden rounded-xl">
+              <div className={`${index % 2 === 1 ? 'lg:col-start-1 lg:row-start-1' : ''}`}>
+                <div className="relative overflow-hidden rounded-xl w-full h-full min-h-[400px] lg:min-h-0">
                   <img
                     src={service.image}
                     alt={service.title}
-                    className="w-full h-80 object-cover hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-bass-dark/50 to-transparent" />
                 </div>
