@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Image as ImageIcon, Video, Music, Calendar, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { loadGalleryImages, getImagesByCategory, getCategoryInfo } from '@/utils/imageLoader';
@@ -180,13 +179,6 @@ const Gallery = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-bass-dark/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 
-                {/* Type Badge */}
-                <Badge 
-                  className="absolute top-4 right-4 bg-neon-blue text-bass-dark"
-                >
-                  <ImageIcon className="w-3 h-3 mr-1" /> Photo
-                </Badge>
-
                 {/* Hover Content */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <Button 
@@ -196,15 +188,6 @@ const Gallery = () => {
                     View Full Size
                   </Button>
                 </div>
-              </div>
-              
-              <div className="p-6">
-                <h3 className="text-lg font-display font-semibold text-foreground mb-2">
-                  {item.title}
-                </h3>
-                <p className="text-muted-foreground text-sm">
-                  {item.description}
-                </p>
               </div>
             </Card>
           ))}
